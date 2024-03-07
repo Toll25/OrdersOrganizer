@@ -1,9 +1,9 @@
 import pymongo
 import json
 
-def load_data_to_mongodb(mongodb_uri):
-    # Connect to MongoDB
-    client = pymongo.MongoClient(mongodb_uri)
+def load_data_to_mongodb(mongodb_uri, username, password):
+    # Connect to MongoDB with authentication
+    client = pymongo.MongoClient(mongodb_uri, username=username, password=password)
     db = client.get_database("OrderDetails")
 
     # Load data from JSON file
@@ -15,8 +15,10 @@ def load_data_to_mongodb(mongodb_uri):
         db_collection = db[collection_name]
         db_collection.insert_many(collection_data)
 
-# Set your MongoDB URI
-mongodb_uri = "mongodb://localhost:27017/"
+# Set your MongoDB URI, username, and password
+mongodb_uri = "mongodb://localhost:27778/"
+username = "root"
+password = "password"
 
 # Call the function to load data into MongoDB
-load_data_to_mongodb(mongodb_uri)
+load_data_to_mongodb(mongodb_uri, username, password)

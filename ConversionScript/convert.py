@@ -2,12 +2,15 @@ import mariadb
 import json
 from bson import ObjectId
 
-def convert_to_json(db_host, db_user, db_password, db_name):
+
+def convert_to_json(db_host, db_port, db_user, db_password, db_name):
     conn = mariadb.connect(
         host=db_host,
         user=db_user,
+        port=db_port,
         password=db_password,
-        database=db_name
+        database=db_name,
+
     )
     cur = conn.cursor()
 
@@ -99,7 +102,8 @@ def convert_to_json(db_host, db_user, db_password, db_name):
         for i, entry in enumerate(row):
             column_name = cur.description[i][0]
             if column_name == "SupplierID":
-                product["Supplier"] = str([supplier["_id"] for supplier in suppliers if supplier["SupplierID"] == entry][0])
+                product["Supplier"] = str(
+                    [supplier["_id"] for supplier in suppliers if supplier["SupplierID"] == entry][0])
             elif column_name == "CategoryID":
                 product["Category"] = str(
                     [category["_id"] for category in categories if category["CategoryID"] == entry][0])
@@ -118,7 +122,8 @@ def convert_to_json(db_host, db_user, db_password, db_name):
             if column_name == "OrderID":
                 order_detail["Order"] = str([order["_id"] for order in orders if order["OrderID"] == entry][0])
             elif column_name == "ProductID":
-                order_detail["Product"] = str([product["_id"] for product in products if product["ProductID"] == entry][0])
+                order_detail["Product"] = str(
+                    [product["_id"] for product in products if product["ProductID"] == entry][0])
             else:
                 order_detail[column_name] = entry
         order_details.append(order_detail)
@@ -142,4 +147,5 @@ def convert_to_json(db_host, db_user, db_password, db_name):
 
     conn.close()
 
-convert_to_json('localhost', 'root', ';)', 'w3schools')
+
+convert_to_json('127.0.0.1', 3306, 'root', 'password', 'w3schools')

@@ -1,10 +1,22 @@
 services:
   mongo:
-    image: mongodb/atlas
-    privileged: true
-    command: |
-      /bin/bash -c "atlas deployments setup --type local --port 27778 --bindIpAll --username root --password password --force && tail -f /dev/null"
+    image: mongo
+    command: mongod --port 27778 --bind_ip_all --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /data/mongo:/data/db
     ports:
       - 27778:27778
+
+
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+    volumes:
+      - /data/mariadb:/var/lib/mysql
+      - /home/toll/Documents/Projects/OrderDetails/SQL:/docker-entrypoint-initdb.d
