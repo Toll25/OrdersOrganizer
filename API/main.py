@@ -9,7 +9,7 @@ password = "password"
 
 origins = [
     "http://localhost:3000", # Example origin
-    "http://localhost:8080", # Another example origin
+    "http://localhost:3001", # Another example origin
     # Add more origins as needed
 ]
 
