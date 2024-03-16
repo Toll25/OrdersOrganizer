@@ -8,7 +8,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - /data/mongo:/data/db
+      - mongo_data:/data/db
     ports:
       - "27778:27778"
 
@@ -19,8 +19,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /data/mariadb:/var/lib/mysql
-      - /home/toll/Documents/Projects/OrderDetails/SQL:/docker-entrypoint-initdb.d
+      - mariadb_data:/var/lib/mysql
+      - ./SQL:/docker-entrypoint-initdb.d
 
   data-conversion:
     build: ./ConversionScript
@@ -42,3 +42,7 @@ services:
     depends_on:
       - mongodb
       - api
+
+volumes:
+  mongo_data:
+  mariadb_data:

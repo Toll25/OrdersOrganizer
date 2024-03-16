@@ -1,7 +1,6 @@
 import mariadb
 import json
-from bson import ObjectId
-import loadCollections
+import pymongo
 
 def getAllItemsFromCategory(category, cur):
     cur.execute(f"SELECT * FROM {category}")
@@ -16,6 +15,7 @@ def getAllItemsFromCategory(category, cur):
             result[cur.description[i][0]] = entry
         results.append(result)
     return results
+
 
 def convert_to_json(db_host, db_port, db_user, db_password, db_name):
     conn = mariadb.connect(
@@ -57,10 +57,25 @@ def convert_to_json(db_host, db_port, db_user, db_password, db_name):
     conn.close()
 
 
+def load_data_to_mongodb(mongodb_uri, username, password):
+    # Connect to MongoDB with authentication
+    client = pymongo.MongoClient(mongodb_uri, username=username, password=password)
+    db = client.get_database("OrderDetails")
+
+    # Load data from JSON file
+    with open('data.json') as json_file:
+        data = json.load(json_file)
+
+    # Insert data into corresponding MongoDB collections
+    for collection_name, collection_data in data.items():
+        db_collection = db[collection_name]
+        db_collection.insert_many(collection_data)
+
+
 convert_to_json('mariadb', 3306, 'root', 'password', 'w3schools')
 
 mongodb_uri = "mongodb://mongodb:27778/"
 username = "root"
 password = "password"
 
-loadCollections.load_data_to_mongodb(mongodb_uri, username,password)
+load_data_to_mongodb(mongodb_uri, username, password)
