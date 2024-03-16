@@ -1,11 +1,26 @@
 from fastapi import FastAPI
 from pymongo import MongoClient
-
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 mongodb_uri = "mongodb://localhost:27778/"
 username = "root"
 password = "password"
+
+origins = [
+    "http://localhost:3000", # Example origin
+    "http://localhost:8080", # Another example origin
+    # Add more origins as needed
+]
+
+# Add CORSMiddleware to the FastAPI application
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins, # Allows all origins listed above
+    allow_credentials=True,
+    allow_methods=["*"], # Allows all HTTP methods
+    allow_headers=["*"], # Allows all headers
+)
 
 client = MongoClient(mongodb_uri, username=username, password=password)
 db = client["OrderDetails"]
