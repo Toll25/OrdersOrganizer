@@ -1,5 +1,7 @@
+version: '3'
+
 services:
-  mongo:
+  mongodb:
     image: mongo
     command: mongod --port 27778 --bind_ip_all --auth
     environment:
@@ -8,15 +10,35 @@ services:
     volumes:
       - /data/mongo:/data/db
     ports:
-      - 27778:27778
-
+      - "27778:27778"
 
   mariadb:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: password
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - /data/mariadb:/var/lib/mysql
       - /home/toll/Documents/Projects/OrderDetails/SQL:/docker-entrypoint-initdb.d
+
+  data-conversion:
+    build: ./ConversionScript
+    depends_on:
+      - mariadb
+      - mongodb
+
+  api:
+    build: ./API
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+
+  web-application:
+    build: ./orders-webui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+      - api

@@ -1,6 +1,7 @@
 import mariadb
 import json
 from bson import ObjectId
+import loadCollections
 
 def getAllItemsFromCategory(category, cur):
     cur.execute(f"SELECT * FROM {category}")
@@ -56,4 +57,10 @@ def convert_to_json(db_host, db_port, db_user, db_password, db_name):
     conn.close()
 
 
-convert_to_json('127.0.0.1', 3306, 'root', 'password', 'w3schools')
+convert_to_json('mariadb', 3306, 'root', 'password', 'w3schools')
+
+mongodb_uri = "mongodb://mongodb:27778/"
+username = "root"
+password = "password"
+
+loadCollections.load_data_to_mongodb(mongodb_uri, username,password)
